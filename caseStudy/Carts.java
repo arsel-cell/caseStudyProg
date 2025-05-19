@@ -56,6 +56,15 @@ public class Carts {
         return total;
     }
     
+    private double applyPromo(double totalAmount) {
+        if (totalAmount >= 500) {
+            double discount = totalAmount * 0.05; // 5% discount
+            System.out.printf("Promo applied: 5%% off for spending ₱500 or more. You saved ₱%.2f%n", discount);
+            return totalAmount - discount;
+        }
+        return totalAmount;
+    }
+    
     public void checkout(Scanner scanner) {
         if (items.isEmpty()) {
             System.out.println("Your cart is empty. Nothing to checkout.");
@@ -63,7 +72,17 @@ public class Carts {
         }
         
         double totalAmount = getTotal();
-        System.out.printf("\nTotal amount: ₱%.2f%n", totalAmount);
+        System.out.printf("\nOriginal total: ₱%.2f%n", totalAmount);
+        
+        double discountedTotal = applyPromo(totalAmount);
+        
+        if (discountedTotal < totalAmount) {
+            System.out.printf("Discounted total: ₱%.2f%n", discountedTotal);
+        } else {
+            System.out.printf("Total amount: ₱%.2f%n", totalAmount);
+        }
+        
+        totalAmount = discountedTotal; // use discounted total going forward
         
         // payment
         double payment = 0;
@@ -118,15 +137,14 @@ public class Carts {
             Products product = entry.getKey();
             int quantity = entry.getValue();
             double itemTotal = product.getprice() * quantity;
-        System.out.println("\n================ RECEIPT ================");
-        System.out.println("MAPAGMAHAL PASTRY SHOP");
-        System.out.println("---------------------------------------");
-        System.out.println("Date & Time: " + formattedDateTime);
-        System.out.println("Receipt #: " + generateReceiptNumber(showTime) +  " - "+product.getID());
-        System.out.println("---------------------------------------");
-        System.out.println("ITEMS:");
-        
-        
+            System.out.println("\n================ RECEIPT ================");
+            System.out.println("MAPAGMAHAL PASTRY SHOP");
+            System.out.println("---------------------------------------");
+            System.out.println("Date & Time: " + formattedDateTime);
+            System.out.println("Receipt #: " + generateReceiptNumber(showTime) +  " - "+product.getID());
+            System.out.println("---------------------------------------");
+            System.out.println("ITEMS:");
+            
             System.out.printf("%s (ID: %s)\n", product.getname(), product.getID());
             System.out.printf("  %d × ₱%.2f = ₱%.2f%n", quantity, product.getprice(), itemTotal);
         }
@@ -144,7 +162,6 @@ public class Carts {
         System.out.println("Please come again!");
         System.out.println("========================================");
         
-   
         items.clear(); // Empty the cart after checkout
     }
     
@@ -170,6 +187,7 @@ public class Carts {
         return items.isEmpty();
     }
 }
+
 	
 	
 	
